@@ -1,4 +1,6 @@
-[
+import Teams from '../../database/models/Teams';
+
+const teamsList = [
     {
       "id": 1,
       "teamName": "Avaí/Kindermann"
@@ -63,4 +65,6 @@
       "id": 16,
       "teamName": "São Paulo"
     }
-  ]
+  ] as Teams[]
+
+export { teamsList };
