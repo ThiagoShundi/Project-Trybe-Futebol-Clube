@@ -1,4 +1,4 @@
-const matches = [
+const matchesList = [
     {
       "id": 1,
       "homeTeamId": 16,
@@ -769,4 +769,4 @@ const matches = [
     }
   ]
 
-  export { matches };
+  export { matchesList };

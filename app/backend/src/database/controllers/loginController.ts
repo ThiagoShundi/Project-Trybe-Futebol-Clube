@@ -28,13 +28,14 @@ export default class LoginController {
     }
   };
 
-  public getLogin = async (req: Request, res: Response): Promise<void> => {
+  public getRole = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { role } = req.body;
+      const { data } = req.body.role;
 
-      console.log(req.body);
-
-      res.status(200).json({ role });
+      if (data.email) {
+        const role = await this.loginService.verifyRole(data.email);
+        res.status(200).json(role);
+      }
     } catch (error) {
       console.log(error);
     }

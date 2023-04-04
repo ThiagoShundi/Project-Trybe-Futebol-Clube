@@ -1,22 +1,29 @@
 import { Request, Response } from 'express';
+// import { ConsoleMessage } from 'puppeteer';
 import MatchService from '../services/matchesService';
 
 export default class MatchController {
   constructor(private matchService = new MatchService()) { }
 
-  public findAll = async (req: Request, res: Response): Promise<void> => {
+  public findAll = async (req: Request, res: Response) => {
     try {
-      // const { inProgress } = req.query;
+      const { inProgress } = req.query;
 
-      // if (inProgress !== undefined) {
-      //   const matches = await this.matchService.findAllByProgress(inProgress);
+      if (inProgress === 'true') {
+        const convertBoolTrue = true;
+        const matches = await this.matchService.findAllByProgress(convertBoolTrue);
 
-      //   res.status(200).json(matches);
-      // }
+        return res.status(200).json(matches);
+      }
+      if (inProgress === 'false') {
+        const convertBoolFalse = false;
+        const matches = await this.matchService.findAllByProgress(convertBoolFalse);
 
+        return res.status(200).json(matches);
+      }
       const matches = await this.matchService.findAll();
 
-      res.status(200).json(matches);
+      return res.status(200).json(matches);
     } catch (error) {
       console.log(error);
     }

@@ -12,4 +12,10 @@ export default class LoginService {
     const result = await this.model.findOne({ where: { email: user.email } });
     return result;
   }
+
+  public async verifyRole(email: ILogin): Promise<ILogin | null> {
+    const result = await this.model.findOne({
+      where: { email }, attributes: { exclude: ['password', 'id', 'username', 'email'] } });
+    return result;
+  }
 }
