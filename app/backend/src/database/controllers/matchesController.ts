@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-// import { ConsoleMessage } from 'puppeteer';
 import MatchService from '../services/matchesService';
 
 export default class MatchController {
@@ -29,14 +28,40 @@ export default class MatchController {
     }
   };
 
-  //   public findById = async (req: Request, res: Response): Promise<void> => {
-  //     try {
-  //       const { id } = req.params;
-  //       const teams = await this.teamService.findById(id);
+  public editFinish = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+      await this.matchService.editFinish(id);
 
-//       res.status(200).json(teams);
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
+      res.status(200).json({ message: 'Finished' });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  public edit = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+      const { awayTeamGoals, homeTeamGoals } = req.body;
+
+      await this.matchService.edit(id, awayTeamGoals, homeTeamGoals);
+
+      res.status(200).json(req.body);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  public create = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals } = req.body;
+
+      const result = await this.matchService
+        .create(homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals);
+
+      res.status(201).json(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 }

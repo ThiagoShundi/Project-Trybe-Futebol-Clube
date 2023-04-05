@@ -15,10 +15,12 @@ export default class MatchService {
     const result = await this.modelMatch.findAll({ include: [{
       model: this.modelTeam,
       as: 'homeTeam',
+      attributes: { exclude: ['id'] },
     },
     {
       model: this.modelTeam,
       as: 'awayTeam',
+      attributes: { exclude: ['id'] },
     }],
     });
     return result;
@@ -41,8 +43,26 @@ export default class MatchService {
     return result;
   }
 
-//   public async findById(id: string): Promise<IMatch | null> {
-//     const result = await this.model.findByPk(id);
-//     return result;
-//   }
+  public async editFinish(id: string): Promise<void> {
+    await this.modelMatch.update({ inProgress: false }, { where: { id } });
+  }
+
+  public async edit(id: string, awayTeamGoals: number, homeTeamGoals: number) {
+    const result = await this.modelMatch
+      .update({ awayTeamGoals, homeTeamGoals }, { where: { id } });
+
+    return result;
+  }
+
+  public async create(
+    homeTeamId: number,
+    awayTeamId: number,
+    awayTeamGoals: number,
+    homeTeamGoals: number,
+  ): Promise<IMatch> {
+    const result = await this.modelMatch
+      .create({ homeTeamId, awayTeamId, awayTeamGoals, homeTeamGoals, inProgress: true });
+
+    return result;
+  }
 }
