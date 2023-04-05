@@ -1,8 +1,12 @@
 import { Request, Response } from 'express';
 import MatchService from '../services/matchesService';
+import TeamService from '../services/teamsService';
 
 export default class MatchController {
-  constructor(private matchService = new MatchService()) { }
+  constructor(
+    private matchService = new MatchService(),
+    private teamService = new TeamService(),
+  ) { }
 
   public findAll = async (req: Request, res: Response) => {
     try {
@@ -28,12 +32,12 @@ export default class MatchController {
     }
   };
 
-  public editFinish = async (req: Request, res: Response): Promise<void> => {
+  public editFinish = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       await this.matchService.editFinish(id);
 
-      res.status(200).json({ message: 'Finished' });
+      return res.status(200).json({ message: 'Finished' });
     } catch (error) {
       console.log(error);
     }
@@ -52,14 +56,27 @@ export default class MatchController {
     }
   };
 
-  public create = async (req: Request, res: Response): Promise<void> => {
+  public create = async (req: Request, res: Response) => {
     try {
       const { homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals } = req.body;
+
+      if (homeTeamId === awayTeamId) {
+        return res.status(422)
+          .json({ message: 'It is not possible to create a match with two equal teams' });
+      }
+
+      const team1 = await this.teamService.findById(homeTeamId);
+      const team2 = await this.teamService.findById(awayTeamId);
+
+      if (!team1 || !team2) {
+        return res.status(404)
+          .json({ message: 'There is no team with such id!' });
+      }
 
       const result = await this.matchService
         .create(homeTeamId, awayTeamId, homeTeamGoals, awayTeamGoals);
 
-      res.status(201).json(result);
+      return res.status(201).json(result);
     } catch (error) {
       console.log(error);
     }
