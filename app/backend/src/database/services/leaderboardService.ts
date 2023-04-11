@@ -1,23 +1,29 @@
-// import Leaderboard from '../models/Leaderboard';
-// import MatchService from './matchesService';
-// import Teams from '../models/Teams';
+import Matches from '../models/Matches';
+import Teams from '../models/Teams';
+import ILeaderboard from '../Interfaces/ILeaderboard';
+import Leaderboard from '../models/Leaderboard';
 
-// import ILeaderboard from '../Interfaces/ILeaderboard';
+export default class LeaderboardService {
+  private _teamModel;
+  private _matchModel;
 
-// export default class LeaderboardService {
-//   private _teamModel;
-//   private _matchModel;
+  constructor() {
+    this._teamModel = Teams;
+    this._matchModel = Matches;
+  }
 
-//   constructor() {
-//     this._teamModel = TeamService;
-//     this._matchModel = MatchService;
-//   }
+  public async findAllHome(): Promise<ILeaderboard[]> {
+    const teams = await this._teamModel.findAll();
+    const matches = await this._matchModel.findAll();
 
-//   public async findAll(): Promise<Leaderboard[]> {
-//     const teams = await this._teamModel.findAll();
-//     const matches = await this._matchModel.findAll();
+    const perfomance = teams.map((team) => {
+      const mat = (matches.filter((match) => match.homeTeamId === team.id));
 
-//     const result = findAll();
-//     return result;
-//   }
-// }
+      const home = new Leaderboard(team, mat);
+
+      return home.findAll();
+    });
+
+    return perfomance;
+  }
+}
