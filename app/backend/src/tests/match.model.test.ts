@@ -45,17 +45,23 @@ const { expect } = chai;
       expect(response.body).to.be.deep.equal(matchesListTrue);
     });
 
-    // it('Finalizar uma partida em andamento com sucesso', async function () {
-    //   sinon
-    //     .stub(Matches, 'update')
-    //     .resolves()
+    it('Finalizar uma partida em andamento com sucesso', async function () {
+      sinon
+        .stub(Matches, 'update')
+        .resolves()
      
-    //   const response = await chai
-    //     .request(app)
-    //     .get('/matches/1/finish');
+      const login = await chai
+        .request(app)
+        .post('/login')
+        .send({ email: 'admin@admin.com', password: 'secret_admin' });
+      
+      const response = await chai
+        .request(app)
+        .patch('/matches/1/finish')
+        .set('Authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwicGFzc3dvcmQiOiJzZWNyZXRfYWRtaW4ifSwiaWF0IjoxNjgwNzkzMDgwLCJleHAiOjE2ODEzOTc4ODB9.CJgh_6Tw1Vk3sjo9zxuICo-oBBzHlIsVzIOTQ5-pFcU');
   
-    //   expect(response.status).to.be.equal(200);
-    //   expect(response.body).to.be.deep.equal({ "message": "Finished" });
-    // });
+      expect(response.status).to.be.equal(200);
+      expect(response.body).to.be.deep.equal({ "message": "Finished" });
+    });
 
   });
