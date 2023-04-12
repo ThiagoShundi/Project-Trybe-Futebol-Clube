@@ -12,6 +12,23 @@ export default class LeaderboardService {
     this._matchModel = Matches;
   }
 
+  public sort = (leaderboardArray: ILeaderboard[]): ILeaderboard[] => {
+    const organized = leaderboardArray.sort((a, b) => {
+      if (a.totalPoints > b.totalPoints) return -1;
+      if (b.totalPoints > a.totalPoints) return 1;
+      if (a.totalVictories < b.totalVictories) return 1;
+      if (a.totalVictories > b.totalVictories) return -1;
+      if (a.goalsBalance > b.goalsBalance) return -1;
+      if (a.goalsBalance < b.goalsBalance) return 1;
+      if (a.goalsFavor > b.goalsFavor) return -1;
+      if (a.goalsFavor < b.goalsFavor) return 1;
+
+      return 0;
+    });
+
+    return organized;
+  };
+
   public async findAllHome(): Promise<ILeaderboard[]> {
     const teams = await this._teamModel.findAll();
     const matches = await this._matchModel.findAll();
@@ -24,6 +41,6 @@ export default class LeaderboardService {
       return home.findAll();
     });
 
-    return perfomance;
+    return this.sort(perfomance);
   }
 }
